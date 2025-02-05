@@ -103,9 +103,10 @@ _autodoc = {
 def command(*name: str):
     def wrap(entry: callable):  # type: ignore
         global _known_commands
-        _known_commands.add(list(name), entry, entry.__doc__)
+        orig_doc = inspect.getdoc(entry)
+        _known_commands.add(list(name), entry, orig_doc)
 
-        doc = inspect.getdoc(entry) or ""
+        doc = orig_doc or ""
         if doc:
             doc += "\n\n"
 

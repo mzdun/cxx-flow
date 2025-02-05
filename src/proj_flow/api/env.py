@@ -25,7 +25,7 @@ from typing import Any, Callable, Dict, List, Optional, Union, cast
 
 import yaml
 
-from proj_flow.base import uname
+from proj_flow.base import plugins, uname
 from proj_flow.base.plugins import load_module_plugins
 
 platform = uname.uname()[0]
@@ -132,21 +132,29 @@ class FlowConfig:
             self.root = cfg.root
         else:
             self.root = os.path.abspath(root)
-            try:
-                with open(
-                    os.path.join(self.root, ".flow", "config.yml"),
-                    encoding="UTF-8",
-                ) as f:
-                    self._cfg = yaml.load(f, Loader=yaml.Loader)
-            except FileNotFoundError:
-                self._cfg = {}
+            self._cfg = plugins.load_data(
+                os.path.join(self.root, ".flow", "config.json")
+            )
 
             self._propagate_compilers()
-            self._load_plugins()
+            self._load_extensions()
 
     def _propagate_compilers(self):
         global _flow_config_default_compiler
         _flow_config_default_compiler = self.compiler_os_default
+
+    def _load_extensions(self):
+        extensions = cast(List[str], self._cfg.get("extensions", []))
+        extensions.insert(0, "proj_flow.minimal")
+
+        local_extensions = os.path.abspath(
+            os.path.join(self.root, ".flow", "extensions")
+        )
+        if os.path.isdir(local_extensions):
+            sys.path.insert(0, local_extensions)
+
+        for extension in extensions:
+            importlib.import_module(extension)
 
     def _load_plugins(self):
         std_plugins = importlib.import_module("proj_flow.plugins")

@@ -9,7 +9,7 @@ path = "src/proj_flow/__init__.py"
 exclude = ["/.github", "/docs"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["proj_flow"]
+packages = ["src/proj_flow"]
 
 [project]
 authors = [{name = "Marcin Zdun", email = "marcin.zdun@gmail.com"}]
@@ -41,4 +41,5 @@ Homepage = "https://pypi.org/project/proj-flow/"
 "Source Code" = "https://github.com/mzdun/proj-flow"
 
 [project.scripts]
-proj-flow = "proj_flow.flow.cli:main"
+cxx-flow = "proj_flow.flow.cli:main"
+proj-flow = "proj_flow.cli:main"

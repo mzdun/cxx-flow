@@ -17,7 +17,9 @@ from proj_flow.base import matrix
 
 
 def _compiler_inner(
-    value: str, used_compilers: Dict[str, List[List[str]]], config_names: Dict[str, List[str]]
+    value: str,
+    used_compilers: Dict[str, List[List[str]]],
+    config_names: Dict[str, List[str]],
 ):
     compiler, names = matrix.find_compiler(value, config_names)
     if compiler not in used_compilers:
@@ -26,7 +28,9 @@ def _compiler_inner(
     return compiler
 
 
-def _compiler(used_compilers: Dict[str, List[List[str]]], config_names: Dict[str, List[str]]):
+def _compiler(
+    used_compilers: Dict[str, List[List[str]]], config_names: Dict[str, List[str]]
+):
     return lambda value: _compiler_inner(value, used_compilers, config_names)
 
 
@@ -43,11 +47,14 @@ _TRUE = {"true", "on", "yes", "1"}
 _boolean_sanitizer = _boolean("with-sanitizer")
 
 
-def _types(used_compilers: Dict[str, List[List[str]]], config_names: Dict[str, List[str]]):
+def _types(
+    used_compilers: Dict[str, List[List[str]]], config_names: Dict[str, List[str]]
+):
     return {
         "compiler": _compiler(used_compilers, config_names),
         "sanitizer": _boolean_sanitizer,
     }
+
 
 def _config(config: List[str], only_host: bool, types: Dict[str, Callable[[str], Any]]):
     args = {}
@@ -112,7 +119,9 @@ def _load_flow_data(rt: env.Runtime):
 class Configs:
     usable: List[env.Config] = []
 
-    def __init__(self, rt: env.Runtime, args: argparse.Namespace):
+    def __init__(
+        self, rt: env.Runtime, args: argparse.Namespace, expand_compilers=True
+    ):
         super()
         configs, keys = _load_flow_data(rt)
 
@@ -139,6 +148,10 @@ class Configs:
             if len(postproc_exclude) == 0
             or not matrix.matches_any(config, postproc_exclude)
         ]
+
+        if not expand_compilers:
+            self.usable = [env.Config(conf, keys) for conf in usable]
+            return
 
         self.usable = []
         for conf in usable:

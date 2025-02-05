@@ -2,7 +2,7 @@
 # This code is licensed under MIT license (see LICENSE for details)
 
 """
-The **proj_flow.flow** contains the inner workings of various *C++ flow*
+The **proj_flow.flow** contains the inner workings of various *Project Flow*
 components.
 """
 

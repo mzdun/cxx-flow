@@ -4,7 +4,7 @@
 # This code is licensed under MIT license (see LICENSE for details)
 
 """
-The **proj_flow.flow.cli** provides command-line entry for the *C++ flow*.
+The **proj_flow.flow.cli** provides command-line entry for the *Project Flow*.
 """
 
 import argparse
@@ -59,7 +59,7 @@ def __main():
 
 
 def main():
-    """Entry point for *C++ flow* tool."""
+    """Entry point for *Project Flow* tool."""
     try:
         __main()
     except KeyboardInterrupt:
